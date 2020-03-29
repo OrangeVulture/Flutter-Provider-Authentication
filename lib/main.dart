@@ -3,6 +3,8 @@ import 'services/auth_service.dart';
 
 import 'views/home.dart';
 import 'views/signup.dart';
+import 'views/first.dart';
+import 'views/citizenSignup.dart';
 import 'widgets/providerWidget.dart';
 
 void main() => runApp(MyApp());
@@ -25,6 +27,7 @@ class MyApp extends StatelessWidget {
               // Signup(authFormType: AuthFormType.signin),
               Signup(authFormType: AuthFormType.signin),
           '/home': (BuildContext context) => HomeController(),
+          '/citizenSignup': (BuildContext context) => CitizenSignup(authFormType:  AuthForm.signup),
         },
       ),
     );
@@ -40,7 +43,7 @@ class HomeController extends StatelessWidget {
       builder: (context, AsyncSnapshot<String> snapshot) {
         if (snapshot.connectionState == ConnectionState.active) {
           final bool signedIn = snapshot.hasData;
-          return signedIn ? Home() : Signup(authFormType: AuthFormType.signup);
+          return signedIn ? Home() : First();
         }
         return CircularProgressIndicator();
       },

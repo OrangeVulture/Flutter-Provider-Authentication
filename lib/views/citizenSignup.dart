@@ -6,20 +6,20 @@ import '../widgets/providerWidget.dart';
 
 final primaryColor = Colors.blue;
 
-enum AuthFormType { signin, signup, reset }
+enum AuthForm { signin, signup, reset }
 
-class Signup extends StatefulWidget {
-  final AuthFormType authFormType;
+class CitizenSignup extends StatefulWidget {
+  final AuthForm authFormType;
 
-  Signup({Key key, @required this.authFormType}) : super(key: key);
+  CitizenSignup({Key key, @required this.authFormType}) : super(key: key);
 
   @override
-  _SignupState createState() => _SignupState(authFormType: this.authFormType);
+  _CitizenSignupState createState() => _CitizenSignupState(authFormType: this.authFormType);
 }
 
-class _SignupState extends State<Signup> {
-  AuthFormType authFormType;
-  _SignupState({this.authFormType});
+class _CitizenSignupState extends State<CitizenSignup> {
+  AuthForm authFormType;
+  _CitizenSignupState({this.authFormType});
   final formKey = GlobalKey<FormState>();
   String _email;
   String _password;
@@ -30,11 +30,11 @@ class _SignupState extends State<Signup> {
     formKey.currentState.reset();
     if (state == "signup") {
       setState(() {
-        authFormType = AuthFormType.signup;
+        authFormType = AuthForm.signup;
       });
     } else {
       setState(() {
-        authFormType = AuthFormType.signin;
+        authFormType = AuthForm.signin;
       });
     }
   }
@@ -54,20 +54,20 @@ class _SignupState extends State<Signup> {
     if (validate()) {
       try {
         final auth = Provider.of(context).auth;
-        if (authFormType == AuthFormType.signin) {
+        if (authFormType == AuthForm.signin) {
           String uid = await auth.signInWithEmailAndPassword(_email, _password);
           print("Signed in with ID $uid");
-        } else if (authFormType == AuthFormType.reset) {
+        } else if (authFormType == AuthForm.reset) {
           await auth.sendPasswordResetEmail(_email);
           setState(() {
-            authFormType = AuthFormType.signin;
+            authFormType = AuthForm.signin;
           });
         } else {
           String uid = await auth.createUserWithEmailAndPassword(
               _email, _password, _name);
           print("Signed up with new ID $uid");
-          String _role = "Municpal";
-        UserManagement().storeNewUser(_email, uid, _role,context);
+          String _role = "Citizen";
+        UserManagement().storeNewUser(_email, uid, _role ,context);
         }
         Navigator.of(context).pushReplacementNamed("/home");
       } catch (e) {
@@ -157,9 +157,9 @@ class _SignupState extends State<Signup> {
 
   AutoSizeText buildHeaderText() {
     String _headerText;
-    if (authFormType == AuthFormType.signup) {
+    if (authFormType == AuthForm.signup) {
       _headerText = "Create New Account";
-    } else if (authFormType == AuthFormType.reset) {
+    } else if (authFormType == AuthForm.reset) {
       _headerText = "Reset Password";
     } else {
       _headerText = "Sign In";
@@ -195,7 +195,7 @@ class _SignupState extends State<Signup> {
   List<Widget> buildInputs() {
     List<Widget> textFields = [];
 
-    if (authFormType == AuthFormType.reset) {
+    if (authFormType == AuthForm.reset) {
       textFields.add(
         TextFormField(
           validator: EmailValidator.validate,
@@ -211,7 +211,7 @@ class _SignupState extends State<Signup> {
       return textFields;
     }
 
-    if (authFormType == AuthFormType.signup) {
+    if (authFormType == AuthForm.signup) {
       textFields.add(
         TextFormField(
           validator: NameValidator.validate,
@@ -261,12 +261,12 @@ class _SignupState extends State<Signup> {
     String _submitButtonText;
     bool _showForgotPassword = false;
 
-    if (authFormType == AuthFormType.signin) {
+    if (authFormType == AuthForm.signin) {
       _switchButtonText = "Create Account";
       _newFormState = "signup";
       _submitButtonText = "Sign In";
       _showForgotPassword = true;
-    } else if (authFormType == AuthFormType.reset) {
+    } else if (authFormType == AuthForm.reset) {
       _switchButtonText = "Return to Sign In";
       _newFormState = "signin";
       _submitButtonText = "Submit";
@@ -321,7 +321,7 @@ class _SignupState extends State<Signup> {
         ),
         onPressed: () {
           setState(() {
-            authFormType = AuthFormType.reset;
+            authFormType = AuthForm.reset;
           });
         },
       ),
